@@ -6,10 +6,10 @@ class NoteInput extends React.Component {
   
       // inisial state
       this.state = {
-        id: '',
+        id:  +new Date(),
         title: '',
         body: '',
-        archived:'',
+        archived:false,
         createdAt: +new Date()
       };
 
@@ -19,11 +19,14 @@ class NoteInput extends React.Component {
     }
 
     onTitleChangeEventHandler(event) {
-      this.setState(() => {
-        return {
-          title: event.target.value,
-        }
-      });
+      const newTitle = event.target.value
+      if (newTitle.length <= 50) {
+        this.setState({
+          title: newTitle
+        })
+
+      }
+      
     }
     
     onNoteChangeEventHandler(event) {
@@ -36,12 +39,20 @@ class NoteInput extends React.Component {
     
     onSubmitEventHandler(event) {
       event.preventDefault();
-      this.props.addNotes(this.state);
+      if (this.state.title.length === 0 || this.state.body.length === 0 ) {
+        alert('Judul atau Catatan harus di isi ')
+      }  
+      if (this.state.title.length > 50) {
+        alert('judul tidak boleh lebih dari 50 karakter')
+      }
+
+      this.props.addNote(this.state);
     }
 
     render() {
       return (
         <form className='note-input' onSubmit={this.onSubmitEventHandler}>
+          <p>Sisa Karakter : { 50 - this.state.title.length } </p>
           <input type="text" placeholder='Ini adalah judul ...' value={this.state.title} onChange={this.onTitleChangeEventHandler} />
           <input type="text" placeholder='Tuliskan catatanmu di sini ...' value={this.state.body} onChange={this.onNoteChangeEventHandler} />
           <button type='submit' className=''>Buat</button>
